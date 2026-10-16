@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123e51">
+  <meta name="description" content="Neon Diner Midnight — private frontend design preview.">
+  <title>Neon Diner · Midnight</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23123e51'/%3E%3Ctext x='32' y='46' text-anchor='middle' fill='%23ff536d' font-size='48' font-family='sans-serif'%3E7%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./src/styles.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <div class="preview-ribbon"><span class="preview-dot"></span> DESIGN PREVIEW <span class="ribbon-detail">Scripted results · No real money</span><button id="preview-open" class="text-button" type="button">Preview controls <span aria-hidden="true">⌘</span></button></div>
+  <main class="game" aria-label="Neon Diner slot preview">
+    <header class="masthead">
+      <div class="wings" aria-hidden="true"></div>
+      <div class="sign"><h1><span>NEON</span> <span>DINER</span></h1><div class="midnight"><i></i>MIDNIGHT<i></i></div></div>
+      <div class="wings right" aria-hidden="true"></div>
+    </header>
+    <div class="status-frame"><div id="spin-status" class="status" role="status" aria-live="polite">Place a bet</div></div>
+    <section class="reel-frame" aria-label="Five reels and three rows">
+      <div id="reels" class="reels"></div>
+      <div id="connection-overlay" class="connection-overlay" hidden>
+        <div><span class="connection-icon" aria-hidden="true">↻</span><h2>Reconnecting</h2><p id="connection-message">Your round is pending.</p><button id="reconnect" class="secondary-button" type="button">Reconnect</button></div>
+      </div>
+    </section>
+    <section class="console" aria-label="Game controls">
+      <div class="meter balance"><label>Balance</label><output id="balance">1 000,00 EUR</output></div>
+      <div class="bet-control"><label for="bet">Total Bet</label><div class="bet-input"><button id="bet-minus" type="button" aria-label="Decrease bet by 0.01 EUR">−</button><input id="bet" type="text" inputmode="decimal" value="0,10" autocomplete="off" aria-describedby="bet-error"><span>EUR</span><button id="bet-plus" type="button" aria-label="Increase bet by 0.01 EUR">+</button></div></div>
+      <div class="meter win"><label>Win</label><output id="win">0,00 EUR</output></div>
+      <div class="presets"><label>Bet presets</label><div id="presets"><button type="button" data-bet="1">1</button><button type="button" data-bet="2">2</button><button type="button" data-bet="5">5</button><button type="button" data-bet="10">10</button><button type="button" data-bet="50">50</button><button type="button" data-bet="100">100</button></div></div>
+      <div class="spin-group"><button id="spin" class="spin-button" type="button">SPIN<span class="spin-arrow" aria-hidden="true">↻</span></button><button id="autoplay" class="autoplay-button" type="button">AUTOPLAY</button><span id="auto-count" aria-live="polite"></span></div>
+    </section>
+    <p id="bet-error" class="bet-error" role="alert"></p>
+    <footer class="footer"><button id="history-open" class="secondary-button" type="button"><span aria-hidden="true">◷</span> Bet History</button><button id="rules-open" class="secondary-button" type="button"><span aria-hidden="true">▤</span> Game Rules</button></footer>
+  </main>
+  <dialog id="history-dialog" aria-labelledby="history-title"><div class="dialog-heading"><div><p class="eyebrow">YOUR SESSION</p><h2 id="history-title">Bet History</h2></div><button class="close-button" data-close type="button" aria-label="Close bet history">×</button></div><div id="history-content"></div><p class="dialog-note">Preview entries only. This browser tab keeps up to 200 rounds.</p></dialog>
+  <dialog id="rules-dialog" aria-labelledby="rules-title"><div class="dialog-heading"><div><p class="eyebrow">NEON DINER</p><h2 id="rules-title">Game Rules</h2></div><button class="close-button" data-close type="button" aria-label="Close game rules">×</button></div><div class="rules-copy"><p>Five reels. Three rows. Five fixed paylines, all active on every spin. Your total bet is divided equally between the five lines.</p><h3>Line wins</h3><p>Matching symbols pay from left to right, starting on the first reel. Seven pays for 2–5 matching symbols; food symbols pay for 3–5.</p><div class="paylines" aria-label="Payline paths"><span>1 · Middle</span><span>2 · Top</span><span>3 · Bottom</span><span>4 · V</span><span>5 · ∧</span></div><h3>Special symbols</h3><p><strong>WILD jukebox</strong> appears on reels 2, 3 and 4. It substitutes for ordinary symbols, but not Dollar or Star.</p><p><strong>Dollar</strong> pays for 3–5 symbols anywhere. <strong>Star</strong> pays for 3–5 symbols on reels 1, 3 and 5. Line and special-symbol awards are added together.</p><h3>Paytable</h3><p class="dialog-note">Multipliers apply to the bet per line. Values below reproduce the supplied rules; this preview does not evaluate payouts.</p><div class="table-scroll"><table><thead><tr><th>Symbol</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody><tr><td>Seven</td><td>10×</td><td>50×</td><td>200×</td><td>3000×</td></tr><tr><td>Burger / Fries</td><td>—</td><td>40×</td><td>100×</td><td>500×</td></tr><tr><td>Milkshake</td><td>—</td><td>20×</td><td>50×</td><td>200×</td></tr><tr><td>Coffee / Cherries / Pie / Sundae</td><td>—</td><td>10×</td><td>30×</td><td>100×</td></tr><tr><td>Dollar</td><td>—</td><td>15×</td><td>100×</td><td>500×</td></tr><tr><td>Star</td><td>—</td><td>80×</td><td>100×</td><td>120×</td></tr></tbody></table></div><h3>Autoplay and connection</h3><p>Select 5, 10, 25, 50 or 100 spins. Stop Autoplay allows the current spin to finish and prevents the next spin. Balance updates when a round result is received.</p><p>While a round is unresolved, another bet cannot be placed. Reconnection retrieves the pending result. Autoplay stays stopped.</p><p class="preview-explanation">This is a frontend preview with authored outcomes and sample money. Live limits, RTP, outcomes and payouts will come from the existing backend. These rules are a design draft, not a new certification document.</p></div></dialog>
+  <dialog id="auto-dialog" aria-labelledby="auto-title"><div class="dialog-heading"><div><p class="eyebrow">SET YOUR SESSION</p><h2 id="auto-title">Autoplay</h2></div><button class="close-button" data-close type="button" aria-label="Close autoplay">×</button></div><p>Total bet per spin <strong id="auto-bet"></strong></p><label class="field-label" for="auto-spins">Number of spins</label><select id="auto-spins"><option>5</option><option>10</option><option>25</option><option>50</option><option>100</option></select><p class="dialog-note">You can stop the series at any time. The current spin will finish.</p><button id="auto-start" class="primary-button" type="button">Start Autoplay</button></dialog>
+  <dialog id="preview-dialog" aria-labelledby="preview-title"><div class="dialog-heading"><div><p class="eyebrow">FRONTEND REVIEW</p><h2 id="preview-title">Preview controls</h2></div><button class="close-button" data-close type="button" aria-label="Close preview controls">×</button></div><p>Choose the next UI scenario. Results are scripted, independent of bet size, and do not represent game odds or payouts.</p><label class="field-label" for="scenario">Next spin</label><select id="scenario"><option value="sequence">Sequence: loss → win → loss</option><option value="win">Win · 2,00 EUR</option><option value="loss">No win</option><option value="connection">Connection interrupted</option></select><p class="dialog-note">Reloading keeps completed preview rounds in this tab. The real API is not connected.</p></dialog>
+  <noscript><p class="noscript">Enable JavaScript to open the interactive preview.</p></noscript>
+</body>
+</html>
