@@ -1,0 +1,18 @@
+{
+  "bundles": [{
+    "name": "symbols",
+    "assets": [
+      {"alias":"burger","src":"common/burger.webp"},
+      {"alias":"cherries","src":"common/cherries.webp"},
+      {"alias":"coffee","src":"common/coffee.webp"},
+      {"alias":"dollar","src":"common/dollar.webp"},
+      {"alias":"fries","src":"common/fries.webp"},
+      {"alias":"pie","src":"common/pie.webp"},
+      {"alias":"seven","src":"common/seven.webp"},
+      {"alias":"shake","src":"common/shake.webp"},
+      {"alias":"star","src":"common/star.webp"},
+      {"alias":"sundae","src":"common/sundae.webp"},
+      {"alias":"wild","src":"common/wild.webp"}
+    ]
+  }]
+}

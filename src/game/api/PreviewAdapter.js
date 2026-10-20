@@ -1,4 +1,4 @@
-import { idleGrid } from './symbols.js';
+import { idleGrid } from '../common/symbols.js';
 export class PreviewError extends Error {
   constructor(message, code) { super(message); this.code = code; }
 }

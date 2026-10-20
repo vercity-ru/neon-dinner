@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Neon Dinner frontend round result",
+  "description": "Documentation of the preview adapter boundary. Replace with the existing backend contract before integration.",
+  "type": "object",
+  "required": ["requestId", "roundId", "grid", "betCents", "balanceCents", "winCents", "timestamp", "status"],
+  "properties": {
+    "requestId": {"type": "string"},
+    "roundId": {"type": "string"},
+    "grid": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {
+        "type": "array", "minItems": 5, "maxItems": 5,
+        "items": {"enum": ["seven", "burger", "fries", "shake", "coffee", "cherries", "pie", "sundae", "wild", "dollar", "star"]}
+      }
+    },
+    "betCents": {"type": "integer", "minimum": 0},
+    "balanceCents": {"type": "integer", "minimum": 0},
+    "winCents": {"type": "integer", "minimum": 0},
+    "winningCells": {"type": "array", "uniqueItems": true, "items": {"type": "integer", "minimum": 0, "maximum": 14}},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "status": {"type": "string"},
+    "multiplier": {"type": "number", "minimum": 0}
+  }
+}

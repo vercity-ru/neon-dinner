@@ -1,14 +1,14 @@
 # Backend adapter integration
 
-The implemented adapter is a frontend preview. The interface below is a proposed boundary, not a claim about existing API endpoints. Replace the adapter in `src/App.vue` when the current backend contract is supplied. Never infer or calculate outcomes in the browser. Vue owns UI state; PixiJS only presents the supplied grid. Translate UI messages through `src/locales/en.json`; controller errors contain a key and optional parameters.
+The implemented adapter is a frontend preview. The interface below is a proposed boundary, not a claim about existing API endpoints. Replace the adapter factory in `src/game/api/index.ts` when the current backend contract is supplied. `schema.ts` and `schema.json` document this frontend boundary, not live server validation. Never infer or calculate outcomes in the browser. Vue owns UI state; PixiJS only presents the supplied grid. Translate UI messages through `src/game/common/locales/en.json`; controller errors contain a key and optional parameters.
 
 ## initialize
 
-Returns mode, config, balanceCents, grid and history. Config contains currency, minBetCents, betStepCents and nullable maxBetCents. Values are integer minor units. Map actual backend IDs to the display IDs in `src/symbols.js`. A grid contains three arrays of five display symbol IDs.
+Returns mode, config, balanceCents, grid and history. Config contains currency, minBetCents, betStepCents and nullable maxBetCents. Values are integer minor units. Map actual backend IDs to the display IDs in `src/game/common/symbols.js`. A grid contains three arrays of five display symbol IDs.
 
 ## spin
 
-Receives `{betCents, requestId}`. The request ID must be treated idempotently by the backend. Resolve with `{roundId, requestId, betCents, balanceCents, winCents, grid, winningCells, timestamp, status, multiplier?}`. `winningCells` is an optional list of row-major indexes 0–14 supplied by the backend. History multiplier is displayed only when supplied, never inferred. Use authoritative server status and money. The UI blocks another spin while the request is unresolved.
+Receives `{betCents, requestId}`. The request ID must be treated idempotently by the backend. Resolve with `{roundId, requestId, betCents, balanceCents, winCents, grid, winningCells, timestamp, status, multiplier?}`. `winningCells` is an optional list of row-major indexes 0–14 supplied by the backend. History multiplier is displayed only when supplied, never inferred. Use authoritative server status and money. The UI blocks another spin while the request is unresolved and while the reels settle onto its supplied result. Balance is replaced on receipt; result text/highlights appear after presentation completes. Pixi's `settled` event releases the presentation gate, not a server settlement operation.
 
 ## recover
 

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { GameController } from '../src/game-controller.js';
-import { PreviewAdapter } from '../src/preview-adapter.js';
-import { parseMoney, validateBet } from '../src/money.js';
+import { GameController } from '../src/game/common/GameController.js';
+import { PreviewAdapter } from '../src/game/api/PreviewAdapter.js';
+import { parseMoney, validateBet } from '../src/game/utils/money.js';
 const wait = ms => new Promise(r => setTimeout(r, ms));
 async function setup(latency = 2) {
   const adapter = new PreviewAdapter({ latency, storage: null });

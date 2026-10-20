@@ -8,9 +8,20 @@
     "dev": "vite --host 127.0.0.1 --port 4173 --strictPort",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "typecheck": "vue-tsc --noEmit"
   },
-  "engines": { "node": ">=22.12" },
-  "dependencies": { "vue": "^3.5.22", "pixi.js": "^8.14.0" },
-  "devDependencies": { "vite": "^7.1.0", "@vitejs/plugin-vue": "^6.0.0" }
+  "engines": {
+    "node": ">=22.12"
+  },
+  "dependencies": {
+    "pixi.js": "^8.14.0",
+    "vue": "^3.5.22"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "typescript": "5.9.3",
+    "vite": "^7.1.0",
+    "vue-tsc": "^3.3.13"
+  }
 }

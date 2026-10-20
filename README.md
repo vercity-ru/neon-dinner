@@ -4,12 +4,13 @@ Frontend reskin project for Burning Hot. The original game is unchanged. This re
 
 ## Run
 
-Requires Node.js 22 or newer. Install the locked dependencies with `npm ci`.
+Requires Node.js 22.12 or newer. Install the locked dependencies with `npm ci`.
 
 ```sh
 npm ci
 npm run dev
 npm test
+npm run typecheck
 npm run build
 ```
 
@@ -25,21 +26,71 @@ Preset buttons select 1, 2, 5, 10, 50 or 100 EUR as the total bet. This is the i
 
 ## Source map
 
-- `src/App.vue`: Vue 3 Composition API screen and reactive UI state.
-- `src/components/ReelStage.vue`: PixiJS 8 canvas, masks, textures, animation and localized Wild label.
-- `src/components/GameDialog.vue`: shared accessible native dialog.
-- `src/components/GameRules.vue`: localized rules and paytable.
-- `src/locales/en.json`: every English UI label, rule, error and accessible description, with flat camelCase keys.
-- `src/i18n.js`: dictionary lookup, fallback and named interpolation, for example `t('spinWon', { amount })`.
-- `src/game-controller.js`: framework-independent round and autoplay state machine. Errors are key/parameter objects.
-- `src/preview-adapter.js`: authored preview outcomes; no game math.
-- `src/reel-layout.js`: responsive sprite geometry, covered by tests.
-- `src/money.js`: integer minor-unit parsing and configured validation.
-- `src/symbols.js`: backend-to-art mapping and symbol translation keys.
-- `vite.config.js`: Vue SFC build and localized HTML metadata.
-- `assets/`: existing background and symbol art. Vite bundles only referenced runtime WebP files.
+The layout follows the supplied existing-game structure:
+
+```text
+src/
+  @types/env.d.ts
+  game/
+    api/
+      index.ts                 # adapter factory / future integration point
+      schema.ts, schema.json   # frontend boundary; not a production API spec
+      PreviewAdapter.js
+    assets/
+      common/                  # symbol textures + measured visible bounds
+      desktop/                 # background (shared with mobile)
+      common.pixi.manifest.json
+    common/
+      Components/              # dialogs, rules
+      locales/en.json           # all UI text, flat camelCase keys
+      GameController.js
+      symbols.js
+      i18n.js
+    desktop/
+      Components/GameConsole.vue
+      Styles/index.css
+      NeonDinnerDesktop.vue
+    mobile/
+      Styles/index.css
+    pixi/
+      Components/ReelStage.vue  # Vue lifecycle/accessibility bridge
+      utils/                   # motion, visible slots, symbol geometry
+      NeonDinner.ts            # Pixi application and five reel containers
+    utils/money.js
+  App.vue
+  main.ts
+```
+
+Desktop and mobile deliberately share one mounted screen and one renderer; mobile styles
+change the layout without recreating an in-flight round on resize. There are no separate
+mobile textures, audio or scenes yet, so unused bundles and audio/random implementations
+have not been added. Original artwork is preserved in `docs/art-source/`.
+
+The common Pixi manifest resolves textures through Vite's hashed asset URLs.
+`symbolBounds.json` measures the main visible alpha component of each symbol, ignoring
+transparent padding and disconnected atlas bleed. Textures are framed from those bounds
+and fitted to each row without stretching. Rebuild the metadata with
+`node scripts/symbol-bounds.cjs` when artwork changes; that optional asset-maintenance script
+requires Sharp (or an installed path through `SHARP_MODULE`). Original source textures are unchanged.
 
 The stack is Vue 3 + PixiJS 8 + Vite. Vue owns HTML controls and dialogs; Pixi owns the visible 5×3 board, symbol sprites, clipping, animation and winner highlights. A screen-reader list mirrors the canvas. Pixi responds to resize and reduced-motion changes and releases its renderer on unmount. Currency values, numeric presets and payout coefficients are data rather than translation keys.
+
+Each reel uses one full-height mask and six recycled symbol views. Continuous movement
+uses elapsed time in row units, acceleration, speed-dependent vertical blur, and a
+velocity-matched deceleration to an integer row. Reels stop in sequence. Decorative
+symbols during travel are an unweighted visual sequence, never a mathematical reel strip.
+The final three symbols always come from the adapter. Gentle shading and vertical
+compression toward the top/bottom give the reels a convex appearance.
+
+On receipt of a result, balance/history are updated and the controller enters `settling`.
+Controls stay locked and autoplay waits until Pixi confirms that all five reels stopped.
+Stop during travel or deceleration completes the current round and cancels the next one.
+Reduced motion shows the supplied final grid without scrolling.
+
+`npm test` covers money, round state, translations, geometry, continuous movement and
+presentation gating. `npm run typecheck` checks TypeScript and Vue. Optional
+`tests/browser.cjs` and `tests/motion-browser.cjs` use Playwright with Edge against the
+development server; supply `PLAYWRIGHT_MODULE` if Playwright is installed outside this project.
 
 The historical folder and existing Sites slug remain `neon-diner` to preserve paths. The displayed game name and page metadata are Neon Dinner. The approved concept PNG remains an unchanged historical reference.
 

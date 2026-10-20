@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { parse } from '@vue/compiler-sfc';
 import { parse as parseTemplate } from '@vue/compiler-dom';
-import en from '../src/locales/en.json' with { type: 'json' };
-import { t, createTranslator } from '../src/i18n.js';
-import { reelLayout } from '../src/reel-layout.js';
-import { symbols } from '../src/symbols.js';
+import en from '../src/game/common/locales/en.json' with { type: 'json' };
+import { t, createTranslator } from '../src/game/common/i18n.js';
+import { reelLayout } from '../src/game/pixi/utils/reelLayout.js';
+import { symbols } from '../src/game/common/symbols.js';
 
 test('dictionary uses flat camelCase keys and parameterized outcomes', () => {
   for(const [key,value] of Object.entries(en)) { assert.match(key,/^[a-z][a-zA-Z0-9]*$/); assert.equal(typeof value,'string'); }
@@ -17,7 +17,7 @@ test('dictionary uses flat camelCase keys and parameterized outcomes', () => {
   for(const symbol of symbols) assert.ok(en[symbol.nameKey]);
 });
 test('Vue templates have no hardcoded visible words or accessibility labels', () => {
-  const files=['src/App.vue',...readdirSync('src/components').filter(f=>f.endsWith('.vue')).map(f=>'src/components/'+f)];
+  const files=readdirSync('src',{recursive:true}).filter(f=>f.endsWith('.vue')).map(f=>'src/'+f);
   function visit(node,file) {
     if(node.type===2) assert.doesNotMatch(node.content,/[A-Za-z]/,`${file}: literal text ${node.content}`);
     for(const prop of node.props||[]) if(prop.type===6 && ['aria-label','title','placeholder','alt'].includes(prop.name)) assert.fail(`${file}: static ${prop.name}`);

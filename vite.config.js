@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import en from './src/locales/en.json' with { type: 'json' };
+import en from './src/game/common/locales/en.json' with { type: 'json' };
 
 export default defineConfig({
   plugins: [vue(), {
