@@ -1,13 +1,16 @@
 {
-  "name": "neon-diner-frontend",
-  "version": "0.1.0",
+  "name": "neon-dinner-frontend",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Neon Diner Midnight frontend with a scripted preview adapter",
+  "description": "Neon Dinner Midnight — Vue 3 and PixiJS frontend",
   "scripts": {
-    "dev": "node scripts/serve.mjs",
-    "build": "node scripts/build.mjs",
+    "dev": "vite --host 127.0.0.1 --port 4173 --strictPort",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
     "test": "node --test tests/*.test.mjs"
   },
-  "engines": { "node": ">=22" }
+  "engines": { "node": ">=22.12" },
+  "dependencies": { "vue": "^3.5.22", "pixi.js": "^8.14.0" },
+  "devDependencies": { "vite": "^7.1.0", "@vitejs/plugin-vue": "^6.0.0" }
 }

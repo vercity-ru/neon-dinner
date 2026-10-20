@@ -1,6 +1,6 @@
 # Backend adapter integration
 
-The implemented adapter is a frontend preview. The interface below is a proposed boundary, not a claim about existing API endpoints. Replace the adapter in `src/app.js` when the current backend contract is supplied. Never infer or calculate outcomes in the browser.
+The implemented adapter is a frontend preview. The interface below is a proposed boundary, not a claim about existing API endpoints. Replace the adapter in `src/App.vue` when the current backend contract is supplied. Never infer or calculate outcomes in the browser. Vue owns UI state; PixiJS only presents the supplied grid. Translate UI messages through `src/locales/en.json`; controller errors contain a key and optional parameters.
 
 ## initialize
 

@@ -1,12 +1,13 @@
-# Neon Diner Midnight
+# Neon Dinner Midnight
 
 Frontend reskin project for Burning Hot. The original game is unchanged. This repository contains the approved diner theme, responsive 5×3 screen, editable bet, preset buttons, spin status, autoplay, history, rules and a reconnect state.
 
 ## Run
 
-Requires Node.js 22 or newer. No package installation is needed.
+Requires Node.js 22 or newer. Install the locked dependencies with `npm ci`.
 
 ```sh
+npm ci
 npm run dev
 npm test
 npm run build
@@ -24,17 +25,23 @@ Preset buttons select 1, 2, 5, 10, 50 or 100 EUR as the total bet. This is the i
 
 ## Source map
 
-- `src/app.js`: DOM rendering, dialog interactions and keyboard support.
-- `src/game-controller.js`: frontend state and autoplay orchestration.
-- `src/preview-adapter.js`: authored preview scenarios only.
-- `src/money.js`: minor-unit parsing, display and configured bet validation.
-- `src/symbols.js`: reskin identity map.
-- `src/styles.css`: responsive theme and reduced-motion behavior.
-- `assets/`: generated background, transparent symbol atlas and optimized runtime assets.
-- `docs/backend-contract.md`: integration contract to align with the real API.
-- `docs/approved-concept.png`: approved visual reference.
+- `src/App.vue`: Vue 3 Composition API screen and reactive UI state.
+- `src/components/ReelStage.vue`: PixiJS 8 canvas, masks, textures, animation and localized Wild label.
+- `src/components/GameDialog.vue`: shared accessible native dialog.
+- `src/components/GameRules.vue`: localized rules and paytable.
+- `src/locales/en.json`: every English UI label, rule, error and accessible description, with flat camelCase keys.
+- `src/i18n.js`: dictionary lookup, fallback and named interpolation, for example `t('spinWon', { amount })`.
+- `src/game-controller.js`: framework-independent round and autoplay state machine. Errors are key/parameter objects.
+- `src/preview-adapter.js`: authored preview outcomes; no game math.
+- `src/reel-layout.js`: responsive sprite geometry, covered by tests.
+- `src/money.js`: integer minor-unit parsing and configured validation.
+- `src/symbols.js`: backend-to-art mapping and symbol translation keys.
+- `vite.config.js`: Vue SFC build and localized HTML metadata.
+- `assets/`: existing background and symbol art. Vite bundles only referenced runtime WebP files.
 
-All runtime source is plain ES modules with no framework lock-in. Artwork is separate from HTML controls; this is not a screenshot with click targets. Build and serving use Node built-ins. Fonts have local system fallbacks; the optional web font loads from Google Fonts.
+The stack is Vue 3 + PixiJS 8 + Vite. Vue owns HTML controls and dialogs; Pixi owns the visible 5×3 board, symbol sprites, clipping, animation and winner highlights. A screen-reader list mirrors the canvas. Pixi responds to resize and reduced-motion changes and releases its renderer on unmount. Currency values, numeric presets and payout coefficients are data rather than translation keys.
+
+The historical folder and existing Sites slug remain `neon-diner` to preserve paths. The displayed game name and page metadata are Neon Dinner. The approved concept PNG remains an unchanged historical reference.
 
 ## Delivery boundary
 

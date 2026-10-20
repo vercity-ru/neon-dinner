@@ -1,15 +1,15 @@
 export const symbols = [
-  { id: 'seven', name: 'Seven', original: 'Seven' },
-  { id: 'burger', name: 'Burger', original: 'Pineapple' },
-  { id: 'fries', name: 'Fries', original: 'Banana' },
-  { id: 'shake', name: 'Milkshake', original: 'Grapes' },
-  { id: 'coffee', name: 'Coffee', original: 'Pear' },
-  { id: 'cherries', name: 'Cherries', original: 'Cherry' },
-  { id: 'pie', name: 'Cherry pie', original: 'Apple' },
-  { id: 'sundae', name: 'Sundae', original: 'Strawberry' },
-  { id: 'wild', name: 'Wild jukebox', original: 'Wild' },
-  { id: 'dollar', name: 'Dollar', original: 'Dollar' },
-  { id: 'star', name: 'Star', original: 'Star' },
+  { id: 'seven', nameKey: 'symbolSeven', original: 'Seven' },
+  { id: 'burger', nameKey: 'symbolBurger', original: 'Pineapple' },
+  { id: 'fries', nameKey: 'symbolFries', original: 'Banana' },
+  { id: 'shake', nameKey: 'symbolShake', original: 'Grapes' },
+  { id: 'coffee', nameKey: 'symbolCoffee', original: 'Pear' },
+  { id: 'cherries', nameKey: 'symbolCherries', original: 'Cherry' },
+  { id: 'pie', nameKey: 'symbolPie', original: 'Apple' },
+  { id: 'sundae', nameKey: 'symbolSundae', original: 'Strawberry' },
+  { id: 'wild', nameKey: 'symbolWild', original: 'Wild' },
+  { id: 'dollar', nameKey: 'symbolDollar', original: 'Dollar' },
+  { id: 'star', nameKey: 'symbolStar', original: 'Star' },
 ];
 export const symbolById = Object.fromEntries(symbols.map(s => [s.id, s]));
 // Display layout only. Outcomes always come from the adapter.

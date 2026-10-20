@@ -11,9 +11,9 @@ async function setup(latency = 2) {
 test('currency accepts decimal commas and does not round fractional cents', () => {
   assert.equal(parseMoney('0,10'), 10); assert.equal(parseMoney('0.11'), 11);
   for (const input of ['0.001','-1','NaN','1e3','','1,2,3']) assert.equal(parseMoney(input), null);
-  assert.equal(validateBet(9, {minBetCents:10,betStepCents:1},100), 'Minimum bet is 0,10 EUR.');
+  assert.deepEqual(validateBet(9, {minBetCents:10,betStepCents:1},100), {key:'minimumBet',params:{amount:'0,10 EUR'}});
   assert.equal(validateBet(11, {minBetCents:10,betStepCents:1},100), '');
-  assert.match(validateBet(110, {minBetCents:10,betStepCents:1},100), /Insufficient/);
+  assert.equal(validateBet(110, {minBetCents:10,betStepCents:1},100).key, 'insufficientBalance');
 });
 test('one in-flight round, unchanged balance until response, immutable bet during spin', async () => {
   const {game} = await setup(25); const p=game.spin();

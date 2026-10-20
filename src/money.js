@@ -10,10 +10,10 @@ export function formatMoney(cents, currency = 'EUR') {
 }
 export function inputMoney(cents) { return (cents / 100).toFixed(2).replace('.', ','); }
 export function validateBet(cents, config, balance) {
-  if (cents === null || !Number.isSafeInteger(cents)) return 'Enter an amount with up to two decimal places.';
-  if (cents < config.minBetCents) return `Minimum bet is ${formatMoney(config.minBetCents)}.`;
-  if ((cents - config.minBetCents) % config.betStepCents !== 0) return `Bet step is ${formatMoney(config.betStepCents)}.`;
-  if (config.maxBetCents != null && cents > config.maxBetCents) return `Maximum bet is ${formatMoney(config.maxBetCents)}.`;
-  if (cents > balance) return 'Insufficient balance for this bet.';
+  if (cents === null || !Number.isSafeInteger(cents)) return { key: 'invalidAmount' };
+  if (cents < config.minBetCents) return { key: 'minimumBet', params: { amount: formatMoney(config.minBetCents) } };
+  if ((cents - config.minBetCents) % config.betStepCents !== 0) return { key: 'betStep', params: { amount: formatMoney(config.betStepCents) } };
+  if (config.maxBetCents != null && cents > config.maxBetCents) return { key: 'maximumBet', params: { amount: formatMoney(config.maxBetCents) } };
+  if (cents > balance) return { key: 'insufficientBalance' };
   return '';
 }

@@ -25,10 +25,10 @@ export class PreviewAdapter {
   async spin({ betCents, requestId }) {
     const existing = this.session.history.find(r => r.requestId === requestId);
     if (existing) return clone(existing);
-    if (this.pending) throw new PreviewError('A round is already pending.', 'PENDING');
+    if (this.pending) throw new PreviewError('roundPending', 'PENDING');
     this.pending = { requestId, betCents };
     await sleep(this.latency);
-    if (this.scenario === 'connection') throw new PreviewError('Connection interrupted.', 'CONNECTION');
+    if (this.scenario === 'connection') throw new PreviewError('scenarioConnection', 'CONNECTION');
     return this.settle(this.scenario);
   }
   settle(scenario) {

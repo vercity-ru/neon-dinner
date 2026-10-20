@@ -2,13 +2,13 @@ import { validateBet } from './money.js';
 import { idleGrid } from './symbols.js';
 export class GameController extends EventTarget {
   constructor(adapter, { autoDelay = 800 } = {}) {
-    super(); this.adapter = adapter; this.autoDelay = autoDelay; this.timer = null;
+    super(); this.adapter = adapter; this.autoDelay = autoDelay; this.timer = null; this.disposed = false;
     this.state = { phase: 'loading', betCents: 10, balanceCents: 0, winCents: 0, grid: structuredClone(idleGrid), winningCells: [], history: [], remaining: 0, autoActive: false, stopping: false, error: '', result: null };
   }
   emit() { this.dispatchEvent(new Event('change')); }
   async initialize() {
     try { Object.assign(this.state, await this.adapter.initialize(), { phase: 'idle' }); }
-    catch { Object.assign(this.state, { phase: 'error', error: 'Unable to load your game. Please reload to try again.' }); }
+    catch { Object.assign(this.state, { phase: 'error', error: { key: 'loadError' } }); }
     this.emit();
   }
   get locked() { return ['loading','spinning','reconnecting','recovering','error'].includes(this.state.phase) || this.state.autoActive; }
@@ -26,10 +26,10 @@ export class GameController extends EventTarget {
     Object.assign(this.state, { phase: 'spinning', error: '', result: null, winningCells: [], winCents: 0 }); this.emit();
     try {
       const result = await this.adapter.spin({ betCents: this.state.betCents, requestId: crypto.randomUUID() });
-      this.applyResult(result); this.scheduleNext();
+      if (!this.disposed) { this.applyResult(result); this.scheduleNext(); }
     } catch (error) {
       this.stopAuto();
-      Object.assign(this.state, { phase: error.code === 'CONNECTION' ? 'reconnecting' : 'error', error: error.code === 'CONNECTION' ? 'Connection lost. Your round is pending.' : 'Unable to confirm the round. Please contact support before trying again.' }); this.emit();
+      Object.assign(this.state, { phase: error.code === 'CONNECTION' ? 'reconnecting' : 'error', error: error.code === 'CONNECTION' ? { key: 'connectionLost' } : { key: 'roundError' } }); this.emit();
     }
   }
   applyResult(result) {
@@ -51,10 +51,11 @@ export class GameController extends EventTarget {
     this.state.stopping = this.state.autoActive && this.state.phase === 'spinning';
     this.state.autoActive = false; this.state.remaining = 0; this.emit();
   }
+  dispose() { this.disposed = true; clearTimeout(this.timer); this.state.autoActive = false; }
   async recover() {
     if (this.state.phase !== 'reconnecting') return;
     this.state.phase = 'recovering'; this.emit();
     try { const result = await this.adapter.recover(); if (result) this.applyResult(result); else throw new Error(); }
-    catch { this.state.phase = 'reconnecting'; this.state.error = 'Still unable to reconnect. Please try again.'; this.emit(); }
+    catch { this.state.phase = 'reconnecting'; this.state.error = { key: 'reconnectFailed' }; this.emit(); }
   }
 }
