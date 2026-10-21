@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { ReelMotion, visibleSlots, symbolForSlot } from '../src/game/pixi/utils/ReelMotion.js';
 import { symbolGeometry } from '../src/game/pixi/utils/symbolGeometry.js';
 import { reelMetrics } from '../src/game/pixi/utils/reelLayout.js';
-import bounds from '../src/game/assets/common/symbolBounds.json' with {type:'json'};
+import bounds from '../src/game/assets/symbol-rigs.json' with {type:'json'};
 import { GameController } from '../src/game/common/GameController.js';
 import { PreviewAdapter } from '../src/game/api/PreviewAdapter.js';
 
@@ -16,7 +16,7 @@ test('visible art, including asymmetric atlas padding, is centered and contained
       assert.equal(g.centerX,cellWidth/2); assert.equal(g.centerY,centerY);
       assert(b.width*g.scaleX<=cellWidth*.82+.001);
       assert(b.height*g.scaleY<=cellHeight*.82+.001);
-      assert(b.x>=0&&b.y>=0&&b.x+b.width<=360&&b.y+b.height<=360);
+      assert(b.x>=0&&b.y>=0&&b.x+b.width<=b.canvasSize&&b.y+b.height<=b.canvasSize);
     }
   }
 });
@@ -78,4 +78,21 @@ test('autoplay waits for presentation and Stop during deceleration submits no ne
   await new Promise(resolve=>setTimeout(resolve,20));
   assert.equal(game.state.history.length,1); assert.equal(game.state.phase,'result');
   assert.equal(game.state.stopping,false); game.dispose();
+});
+
+test('autoplay waits for win completion once; a manual next spin cancels the old win gate',async()=>{
+  const api=new PreviewAdapter({latency:1,storage:null}); api.setScenario('win');
+  const game=new GameController(api,{autoDelay:1,waitForPresentation:true,waitForWinPresentation:true});
+  await game.initialize(); game.startAuto(5);
+  await new Promise(r=>setTimeout(r,20)); game.completePresentation();
+  await new Promise(r=>setTimeout(r,20));
+  assert.equal(game.state.history.length,1); assert.equal(game.state.phase,'result');
+  game.completeWinPresentation(); game.completeWinPresentation();
+  await new Promise(r=>setTimeout(r,20));
+  assert.equal(game.state.history.length,2); assert.equal(game.state.phase,'settling');
+  game.stopAuto(); game.completePresentation();
+  const next=game.spin(); game.completeWinPresentation(); await next;
+  await new Promise(r=>setTimeout(r,20));
+  assert.equal(game.state.history.length,3); assert.equal(game.state.phase,'settling');
+  game.dispose();
 });

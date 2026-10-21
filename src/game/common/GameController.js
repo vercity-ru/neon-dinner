@@ -1,8 +1,9 @@
 import { validateBet } from '../utils/money.js';
 import { idleGrid } from './symbols.js';
 export class GameController extends EventTarget {
-  constructor(adapter, { autoDelay = 800, waitForPresentation = false } = {}) {
+  constructor(adapter, { autoDelay = 800, waitForPresentation = false, waitForWinPresentation = false } = {}) {
     super(); this.adapter = adapter; this.autoDelay = autoDelay; this.waitForPresentation = waitForPresentation; this.timer = null; this.disposed = false;
+    this.waitForWinPresentation = waitForWinPresentation; this.awaitingWin = false;
     this.state = { phase: 'loading', betCents: 10, balanceCents: 0, winCents: 0, grid: structuredClone(idleGrid), winningCells: [], history: [], remaining: 0, autoActive: false, stopping: false, error: '', result: null };
   }
   emit() { this.dispatchEvent(new Event('change')); }
@@ -22,6 +23,7 @@ export class GameController extends EventTarget {
     if (['loading','spinning','settling','reconnecting','recovering','error'].includes(this.state.phase) || (this.state.autoActive && !fromAuto)) return;
     const error = validateBet(this.state.betCents, this.state.config, this.state.balanceCents);
     if (error) { this.stopAuto(); this.state.error = error; this.emit(); return; }
+    this.awaitingWin = false;
     if (fromAuto) this.state.remaining--;
     Object.assign(this.state, { phase: 'spinning', error: '', result: null, winningCells: [], winCents: 0 }); this.emit();
     try {
@@ -39,7 +41,14 @@ export class GameController extends EventTarget {
   }
   completePresentation() {
     if(this.disposed || this.state.phase!=='settling') return;
-    this.state.phase='result'; this.state.stopping=false; this.emit(); this.scheduleNext();
+    const waitForWin=this.waitForWinPresentation && this.state.winningCells.length>0;
+    this.awaitingWin=waitForWin;
+    this.state.phase='result'; this.state.stopping=false; this.emit();
+    if(!waitForWin) this.scheduleNext();
+  }
+  completeWinPresentation() {
+    if(this.disposed || !this.awaitingWin || this.state.phase!=='result') return;
+    this.awaitingWin=false; this.scheduleNext();
   }
   startAuto(count) {
     if (this.locked || ![5,10,25,50,100].includes(count)) return;

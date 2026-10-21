@@ -1,0 +1,101 @@
+{
+  "burger": {
+    "x": 99,
+    "y": 64,
+    "width": 468,
+    "height": 507,
+    "canvasSize": 640,
+    "atlasX": 4,
+    "atlasY": 4
+  },
+  "cherries": {
+    "x": 85,
+    "y": 69,
+    "width": 484,
+    "height": 491,
+    "canvasSize": 640,
+    "atlasX": 4,
+    "atlasY": 4
+  },
+  "coffee": {
+    "x": 156,
+    "y": 73,
+    "width": 394,
+    "height": 493,
+    "canvasSize": 640,
+    "atlasX": 4,
+    "atlasY": 4
+  },
+  "dollar": {
+    "x": 155,
+    "y": 93,
+    "width": 386,
+    "height": 478,
+    "canvasSize": 640,
+    "atlasX": 4,
+    "atlasY": 4
+  },
+  "fries": {
+    "x": 64,
+    "y": 101,
+    "width": 506,
+    "height": 469,
+    "canvasSize": 640,
+    "atlasX": 4,
+    "atlasY": 4
+  },
+  "pie": {
+    "x": 81,
+    "y": 87,
+    "width": 495,
+    "height": 465,
+    "canvasSize": 640,
+    "atlasX": 4,
+    "atlasY": 4
+  },
+  "seven": {
+    "x": 87,
+    "y": 66,
+    "width": 465,
+    "height": 507,
+    "canvasSize": 640,
+    "atlasX": 4,
+    "atlasY": 4
+  },
+  "shake": {
+    "x": 67,
+    "y": 64,
+    "width": 506,
+    "height": 512,
+    "canvasSize": 640,
+    "atlasX": 4,
+    "atlasY": 4
+  },
+  "star": {
+    "x": 91,
+    "y": 82,
+    "width": 470,
+    "height": 482,
+    "canvasSize": 640,
+    "atlasX": 4,
+    "atlasY": 4
+  },
+  "sundae": {
+    "x": 113,
+    "y": 64,
+    "width": 427,
+    "height": 512,
+    "canvasSize": 640,
+    "atlasX": 4,
+    "atlasY": 4
+  },
+  "wild": {
+    "x": 73,
+    "y": 83,
+    "width": 478,
+    "height": 484,
+    "canvasSize": 640,
+    "atlasX": 4,
+    "atlasY": 4
+  }
+}

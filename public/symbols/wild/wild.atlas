@@ -1,0 +1,18 @@
+wild.png
+size: 1024, 1024
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+pma: false
+base
+  bounds: 4, 4, 640, 640
+  rotate: false
+  index: -1
+halo
+  bounds: 652, 4, 256, 256
+  rotate: false
+  index: -1
+sparkle
+  bounds: 652, 268, 128, 128
+  rotate: false
+  index: -1

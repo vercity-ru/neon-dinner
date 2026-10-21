@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap');
-.pixi-reels{position:relative;aspect-ratio:2.2;width:100%;overflow:hidden;border-radius:14px;background:#164454}
+.pixi-reels{position:relative;aspect-ratio:2.2;width:100%;overflow:visible;border-radius:14px;background:#164454}
+/* Transparent canvas padding must not make the mobile document scroll sideways. */
+html,body{overflow-x:clip}
 .pixi-reels canvas{display:block;width:100%;height:100%}.renderer-message{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 :root{color-scheme:dark;--ink:#f5f3df;--muted:#c2d4d9;--cream:#fff0ce;--aqua:#61eff4;--red:#ff314e;--panel:#123e51;--line:#7198a4;font-family:Barlow,Arial,sans-serif;font-synthesis:none}

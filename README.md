@@ -66,12 +66,13 @@ change the layout without recreating an in-flight round on resize. There are no 
 mobile textures, audio or scenes yet, so unused bundles and audio/random implementations
 have not been added. Original artwork is preserved in `docs/art-source/`.
 
-The common Pixi manifest resolves textures through Vite's hashed asset URLs.
-`symbolBounds.json` measures the main visible alpha component of each symbol, ignoring
-transparent padding and disconnected atlas bleed. Textures are framed from those bounds
-and fitted to each row without stretching. Rebuild the metadata with
-`node scripts/symbol-bounds.cjs` when artwork changes; that optional asset-maintenance script
-requires Sharp (or an installed path through `SHARP_MODULE`). Original source textures are unchanged.
+Symbols now use the reviewed reconstructed artwork in `public/symbols/<id>/`.
+Each symbol has a Spine 4.2 JSON, text atlas and PNG. `src/game/assets/symbol-rigs.json`
+records the artwork bounds inside the atlas. The static reel sprite is a framed region
+of that same atlas PNG, so changing to Spine does not swap artwork or upload a second
+copy of the texture. Original WebP assets and the old common manifest remain references.
+To import another compatible reviewed package, run
+`node scripts/import-symbol-rigs.cjs /path/to/neon-dinner-assets`.
 
 The stack is Vue 3 + PixiJS 8 + Vite. Vue owns HTML controls and dialogs; Pixi owns the visible 5×3 board, symbol sprites, clipping, animation and winner highlights. A screen-reader list mirrors the canvas. Pixi responds to resize and reduced-motion changes and releases its renderer on unmount. Currency values, numeric presets and payout coefficients are data rather than translation keys.
 
@@ -86,6 +87,35 @@ On receipt of a result, balance/history are updated and the controller enters `s
 Controls stay locked and autoplay waits until Pixi confirms that all five reels stopped.
 Stop during travel or deceleration completes the current round and cancels the next one.
 Reduced motion shows the supplied final grid without scrolling.
+
+## Sprite / Spine win lifecycle
+
+Spinning and settling use only the 30 recycled Pixi sprites. JSON/atlas data is loaded
+at initialization, but no Spine display instances are created before a winning result.
+Only indices in the supplied `winningCells` become Spine instances, playing `win` once
+with `autoUpdate: false`. The application advances only those instances, and stops its
+ticker after the animation completes. Nonwinning symbols stay static throughout.
+Starting the next spin destroys all win instances and restores all static views before
+reel movement begins, including when a new spin interrupts a win. Shared texture and
+parsed skeleton data remain cached for reuse; they are not duplicated per cell.
+Autoplay waits for the win-complete callback before scheduling its next round; a manual
+spin can interrupt the animation immediately. Static fallback and reduced motion also
+release this gate, so a missing/disabled animation never leaves autoplay waiting.
+
+The win layer sits outside the five reel masks. A padded backing canvas lets 150% wins
+extend above/below/alongside the board. Resizing keeps the sprite and rig origins aligned.
+Reduced motion retains static winning symbols and highlights. A failed rig load or
+instance construction also retains its static symbol instead of hiding the result.
+
+These assets are reconstructed flat artwork on weighted meshes, with separate halo and
+sparkle effects; they are not fully separated object parts or native `.spine` projects.
+All four source clips are included, but the game uses only `win` as requested.
+The integration uses official `@esotericsoftware/spine-pixi-v8` 4.2.120.
+See `docs/SPINE-RUNTIME-LICENSE.txt` for the runtime license distributed with this project.
+
+`tests/spine-browser.cjs` verifies the real sprite-to-Spine transition, all 11 symbols,
+texture sharing, matching setup positions, the 150% backing-canvas bounds, mobile
+resizing, interrupted wins, cleanup, reduced motion and unavailable-rig fallback.
 
 `npm test` covers money, round state, translations, geometry, continuous movement and
 presentation gating. `npm run typecheck` checks TypeScript and Vue. Optional

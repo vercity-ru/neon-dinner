@@ -9,7 +9,7 @@ import { GameController } from '../common/GameController.js';
 import { createGameApi } from '../api/index.ts';
 import { parseMoney, formatMoney, inputMoney } from '../utils/money.js';
 import { t } from '../common/i18n.js';
-const adapter = createGameApi(), game = new GameController(adapter, { waitForPresentation: true });
+const adapter = createGameApi(), game = new GameController(adapter, { waitForPresentation: true, waitForWinPresentation: true });
 const state = shallowRef(structuredClone(game.state));
 const draftBet = ref('0,10'), rendererReady = ref(false), rendererFailed = ref(false);
 const historyDialog = ref(), rulesDialog = ref(), autoDialog = ref(), previewDialog = ref();
@@ -69,7 +69,7 @@ onBeforeUnmount(() => { game.dispose(); game.removeEventListener('change',sync);
       </button>
     </div>
     <section class="reel-frame" :aria-label="t('reelsLabel')">
-      <ReelStage :grid="state.grid" :phase="state.phase" :winning-cells="state.winningCells" @ready="rendererReady=true" @error="rendererFailed=true" @settled="game.completePresentation()" />
+      <ReelStage :grid="state.grid" :phase="state.phase" :winning-cells="state.winningCells" @ready="rendererReady=true" @error="rendererFailed=true" @settled="game.completePresentation()" @win-complete="game.completeWinPresentation()" />
       <div id="connection-overlay" class="connection-overlay" :hidden="!reconnecting"><div><span class="connection-icon" aria-hidden="true">↻</span><h2>{{ t('reconnectTitle') }}</h2><p id="connection-message">{{ errorText }}</p><button id="reconnect" class="secondary-button" type="button" :disabled="state.phase==='recovering'" @click="game.recover()">{{ t(state.phase==='recovering'?'reconnecting':'reconnect') }}</button></div></div>
     </section>
     <GameConsole v-model:draft-bet="draftBet" :state="state" :locked="locked" :money="money" :auto-label="autoLabel" :auto-count="autoCount" @step-bet="stepBet" @commit-bet="commitBet" @select-bet="selectBet" @spin="spin" @autoplay="autoplay" />

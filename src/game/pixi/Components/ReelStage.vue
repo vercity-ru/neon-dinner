@@ -5,7 +5,7 @@ import { symbolById } from '../../common/symbols.js';
 import { t } from '../../common/i18n.js';
 
 const props = defineProps({ grid:Array, phase:String, winningCells:Array });
-const emit = defineEmits(['ready','error','settled']);
+const emit = defineEmits(['ready','error','settled','win-complete']);
 const host=ref(null), ready=ref(false), failed=ref(false);
 const moving=computed(()=>['spinning','settling'].includes(props.phase));
 const labels=computed(()=>props.grid.flat().map((id,i)=>t('symbolPosition',{symbol:t(symbolById[id].nameKey),reel:i%5+1,row:Math.floor(i/5)+1})));
@@ -19,7 +19,7 @@ function sync() {
 watch(()=>props.phase,sync);
 onMounted(async()=>{
   try {
-    renderer=new NeonDinner(host.value,props.grid,()=>emit('settled'));
+    renderer=new NeonDinner(host.value,props.grid,()=>emit('settled'),()=>emit('win-complete'));
     await renderer.init();
     if(disposed) return;
     ready.value=true; sync(); emit('ready');
