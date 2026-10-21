@@ -30,40 +30,58 @@
   box-shadow: inset 0 0 0 2px #326473, 0 0 12px #52dce455;
 }
 
-/* Slow, low-contrast light sweeps: no flicker or flashing neon. */
-.sign { overflow: hidden; isolation: isolate; }
+/* Layered neon glow and a brighter travelling reflection. */
+.sign { overflow: hidden; isolation: isolate; animation: signHalo 3.8s ease-in-out infinite; }
 .sign::after {
   content: '';
   position: absolute;
   inset: -35% auto -35% -65%;
   width: 42%;
   pointer-events: none;
-  background: linear-gradient(90deg, transparent, #bdfaff08 25%, #fff9e333 50%, #ffbacb0a 75%, transparent);
+  background: linear-gradient(90deg, transparent, #66faff22 25%, #fffbed88 50%, #ff86ad33 75%, transparent);
   transform: translateX(0) skewX(-22deg);
-  animation: signSheen 8s ease-in-out infinite;
+  animation: signSheen 3.6s ease-in-out infinite;
 }
-.sign h1 span {
+.sign .brand-title span {
   display: inline-block;
-  animation: neonGlow 6s ease-in-out infinite;
+  animation: neonGlow 2.8s ease-in-out infinite;
 }
-.sign h1 span:last-child { animation-delay: -3s; }
-.midnight i { animation: trimGlow 6s ease-in-out infinite; }
-.midnight i:last-child { animation-delay: -3s; }
+.sign .brand-title span:last-child { animation-delay: -1.4s; }
+.midnight i { animation: trimGlow 2s ease-in-out infinite; }
+.midnight i:last-child { animation-delay: -1s; }
+.wings { animation: wingGlow 3.8s ease-in-out infinite; }
 @keyframes signSheen {
-  0%, 18% { transform: translateX(0) skewX(-22deg); opacity: 0; }
-  24% { opacity: .8; }
-  58% { opacity: .8; }
-  66%, 100% { transform: translateX(470%) skewX(-22deg); opacity: 0; }
+  0%, 8% { transform: translateX(0) skewX(-22deg); opacity: 0; }
+  18%, 62% { opacity: 1; }
+  80%, 100% { transform: translateX(470%) skewX(-22deg); opacity: 0; }
 }
 @keyframes neonGlow {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.16); }
+  0%, 100% { filter: brightness(1) saturate(1); }
+  50% { filter: brightness(1.45) saturate(1.35); }
 }
 @keyframes trimGlow {
-  0%, 100% { opacity: .65; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: .7; filter: brightness(1); }
+  50% { opacity: 1; filter: brightness(1.7); }
+}
+@keyframes signHalo {
+  0%, 100% { box-shadow: 0 0 0 2px #141827, 0 0 0 4px #55e8ef, 0 0 16px 5px #0ad6e580, inset 0 0 0 3px #527b86; }
+  50% { box-shadow: 0 0 0 2px #141827, 0 0 0 4px #b5fcff, -10px 0 30px 6px #00eaff88, 10px 0 30px 6px #ff315d88, inset 0 0 0 3px #74b3bf; }
+}
+@keyframes wingGlow {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.5) drop-shadow(0 0 6px #ff315d); }
+}
+.sign.dialog-logo { width: max-content; max-width: 100%; margin: 3px auto 26px; padding: 10px 20px 12px; border-radius: 18px; }
+.sign.dialog-logo .brand-title { font-size: 36px; letter-spacing: 3px; }
+.sign.dialog-logo .midnight { font-size: 9px; letter-spacing: 5px; gap: 10px; margin-top: 8px; }
+.sign.dialog-logo .midnight i { width: 22px; }
+@media(max-width:650px) {
+  .sign.dialog-logo { padding: 9px 12px 11px; margin-bottom: 23px; }
+  .sign.dialog-logo .brand-title { font-size: clamp(23px, 7vw, 32px); letter-spacing: 2px; }
+  .sign.dialog-logo .midnight { font-size: 8px; letter-spacing: 4px; gap: 8px; }
+  .sign.dialog-logo .midnight i { width: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .sign::after { display: none; }
-  .sign h1 span, .midnight i { animation: none; }
+  .sign, .sign .brand-title span, .midnight i, .wings { animation: none; }
 }

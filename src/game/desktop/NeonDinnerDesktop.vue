@@ -4,6 +4,7 @@ import GameConsole from './Components/GameConsole.vue';
 import ReelStage from '../pixi/Components/ReelStage.vue';
 import GameDialog from '../common/Components/GameDialog.vue';
 import GameRules from '../common/Components/GameRules.vue';
+import GameLogo from '../common/Components/GameLogo.vue';
 import { GameController } from '../common/GameController.js';
 import { createGameApi } from '../api/index.ts';
 import { parseMoney, formatMoney, inputMoney } from '../utils/money.js';
@@ -57,7 +58,7 @@ onBeforeUnmount(() => { game.dispose(); game.removeEventListener('change',sync);
 <template>
   <div class="preview-ribbon"><span class="preview-dot"></span>{{ t('designPreview') }}<span class="ribbon-detail">{{ t('previewDisclaimer') }}</span><button id="preview-open" class="text-button" type="button" :disabled="locked" @click="previewDialog.open()">{{ t('previewControls') }} <span aria-hidden="true">⌘</span></button></div>
   <main class="game" :aria-label="t('gamePreview')">
-    <header class="masthead"><div class="wings" aria-hidden="true"></div><div class="sign"><h1><span>{{ t('gameNameFirst') }}</span> <span>{{ t('gameNameSecond') }}</span></h1><div class="midnight"><i></i>{{ t('gameEdition') }}<i></i></div></div><div class="wings right" aria-hidden="true"></div></header>
+    <header class="masthead"><div class="wings" aria-hidden="true"></div><GameLogo /><div class="wings right" aria-hidden="true"></div></header>
     <div class="status-toolbar">
       <button id="history-open" class="utility-button" type="button" :title="t('betHistory')" :aria-label="t('betHistory')" aria-haspopup="dialog" aria-controls="history-dialog" :disabled="busy||state.autoActive" @click="historyDialog.open()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a9 9 0 1 1 1.8 7.5M3 4v6h6M12 7v5l3 2"/></svg>
@@ -74,13 +75,13 @@ onBeforeUnmount(() => { game.dispose(); game.removeEventListener('change',sync);
     <GameConsole v-model:draft-bet="draftBet" :state="state" :locked="locked" :money="money" :auto-label="autoLabel" :auto-count="autoCount" @step-bet="stepBet" @commit-bet="commitBet" @select-bet="selectBet" @spin="spin" @autoplay="autoplay" />
     <p id="bet-error" class="bet-error" role="alert">{{ reconnecting ? '' : errorText }}</p>
   </main>
-  <GameDialog id="history-dialog" ref="historyDialog" :title="t('betHistory')" :eyebrow="t('yourSession')">
+  <GameDialog branded id="history-dialog" ref="historyDialog" :title="t('betHistory')" :eyebrow="t('yourSession')">
     <div id="history-content"><div v-if="!state.history.length" class="empty-history"><strong>{{ t('freshStart') }}</strong><p>{{ t('historyEmpty') }}</p></div>
       <div v-else class="table-scroll"><table><thead><tr><th v-for="key in ['historyTime','historyBet','historyMultiplier','historyPayout','historyStatus']" :key="key">{{ t(key) }}</th></tr></thead><tbody><tr v-for="row in state.history" :key="row.roundId"><td>{{ new Date(row.timestamp).toLocaleTimeString('en-GB') }}</td><td>{{ money(row.betCents) }}</td><td>{{ row.multiplier==null?t('notAvailable'):t('multiplierValue',{value:row.multiplier}) }}</td><td>{{ money(row.winCents) }}</td><td>{{ historyStatus(row) }}</td></tr></tbody></table></div>
     </div><p class="dialog-note">{{ t('historyNote') }}</p>
   </GameDialog>
-  <GameDialog id="rules-dialog" ref="rulesDialog" :title="t('gameRules')" :eyebrow="t('gameName')"><GameRules /></GameDialog>
-  <GameDialog id="auto-dialog" ref="autoDialog" :title="t('autoplay')" :eyebrow="t('setSession')">
+  <GameDialog branded id="rules-dialog" ref="rulesDialog" :title="t('gameRules')" :eyebrow="t('gameName')"><GameRules /></GameDialog>
+  <GameDialog branded id="auto-dialog" ref="autoDialog" :title="t('autoplay')" :eyebrow="t('setSession')">
     <p>{{ t('betPerSpin') }} <strong id="auto-bet">{{ money(state.betCents) }}</strong></p><label class="field-label" for="auto-spins">{{ t('numberOfSpins') }}</label><select id="auto-spins" v-model="autoSpins"><option v-for="count in spinCounts" :key="count" :value="count">{{ count }}</option></select><p class="dialog-note">{{ t('autoplayNote') }}</p><button id="auto-start" class="primary-button" type="button" @click="startAuto">{{ t('startAutoplay') }}</button>
   </GameDialog>
   <GameDialog id="preview-dialog" ref="previewDialog" :title="t('previewControls')" :eyebrow="t('frontendReview')">
