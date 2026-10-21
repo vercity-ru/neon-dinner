@@ -58,14 +58,21 @@ onBeforeUnmount(() => { game.dispose(); game.removeEventListener('change',sync);
   <div class="preview-ribbon"><span class="preview-dot"></span>{{ t('designPreview') }}<span class="ribbon-detail">{{ t('previewDisclaimer') }}</span><button id="preview-open" class="text-button" type="button" :disabled="locked" @click="previewDialog.open()">{{ t('previewControls') }} <span aria-hidden="true">⌘</span></button></div>
   <main class="game" :aria-label="t('gamePreview')">
     <header class="masthead"><div class="wings" aria-hidden="true"></div><div class="sign"><h1><span>{{ t('gameNameFirst') }}</span> <span>{{ t('gameNameSecond') }}</span></h1><div class="midnight"><i></i>{{ t('gameEdition') }}<i></i></div></div><div class="wings right" aria-hidden="true"></div></header>
-    <div class="status-frame"><div id="spin-status" class="status" :class="{winning:state.phase==='result'&&state.winCents>0}" role="status" aria-live="polite">{{ status }}</div></div>
+    <div class="status-toolbar">
+      <button id="history-open" class="utility-button" type="button" :title="t('betHistory')" :aria-label="t('betHistory')" aria-haspopup="dialog" aria-controls="history-dialog" :disabled="busy||state.autoActive" @click="historyDialog.open()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a9 9 0 1 1 1.8 7.5M3 4v6h6M12 7v5l3 2"/></svg>
+      </button>
+      <div class="status-frame"><div id="spin-status" class="status" :class="{winning:state.phase==='result'&&state.winCents>0}" role="status" aria-live="polite">{{ status }}</div></div>
+      <button id="rules-open" class="utility-button" type="button" :title="t('gameRules')" :aria-label="t('gameRules')" aria-haspopup="dialog" aria-controls="rules-dialog" :disabled="busy||state.autoActive" @click="rulesDialog.open()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5C9 3 5 3 2 4v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1Zm0 0v15M5.5 7.5l3 .5m-3 3.5 3 .5m7-4 3-.5m-3 4.5 3-.5"/></svg>
+      </button>
+    </div>
     <section class="reel-frame" :aria-label="t('reelsLabel')">
       <ReelStage :grid="state.grid" :phase="state.phase" :winning-cells="state.winningCells" @ready="rendererReady=true" @error="rendererFailed=true" @settled="game.completePresentation()" />
       <div id="connection-overlay" class="connection-overlay" :hidden="!reconnecting"><div><span class="connection-icon" aria-hidden="true">↻</span><h2>{{ t('reconnectTitle') }}</h2><p id="connection-message">{{ errorText }}</p><button id="reconnect" class="secondary-button" type="button" :disabled="state.phase==='recovering'" @click="game.recover()">{{ t(state.phase==='recovering'?'reconnecting':'reconnect') }}</button></div></div>
     </section>
     <GameConsole v-model:draft-bet="draftBet" :state="state" :locked="locked" :money="money" :auto-label="autoLabel" :auto-count="autoCount" @step-bet="stepBet" @commit-bet="commitBet" @select-bet="selectBet" @spin="spin" @autoplay="autoplay" />
     <p id="bet-error" class="bet-error" role="alert">{{ reconnecting ? '' : errorText }}</p>
-    <footer class="footer"><button id="history-open" class="secondary-button" type="button" :disabled="busy||state.autoActive" @click="historyDialog.open()"><span aria-hidden="true">◷</span>{{ t('betHistory') }}</button><button id="rules-open" class="secondary-button" type="button" :disabled="busy||state.autoActive" @click="rulesDialog.open()"><span aria-hidden="true">▤</span>{{ t('gameRules') }}</button></footer>
   </main>
   <GameDialog id="history-dialog" ref="historyDialog" :title="t('betHistory')" :eyebrow="t('yourSession')">
     <div id="history-content"><div v-if="!state.history.length" class="empty-history"><strong>{{ t('freshStart') }}</strong><p>{{ t('historyEmpty') }}</p></div>
